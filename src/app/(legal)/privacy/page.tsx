@@ -4,9 +4,12 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Byte Studio",
+  title: "Privacy Policy",
   description:
     "How Byte Studio collects, uses, and protects information from visitors to this site.",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 const sections: { heading: string; body: React.ReactNode }[] = [

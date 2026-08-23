@@ -4,8 +4,11 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 
 export const metadata: Metadata = {
-  title: "Terms & Conditions | Byte Studio",
+  title: "Terms & Conditions",
   description: "The terms that govern your use of the Byte Studio website.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 const sections: { heading: string; body: React.ReactNode }[] = [
