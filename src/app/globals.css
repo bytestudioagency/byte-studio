@@ -1,1 +1,285 @@
 @import "tailwindcss";
+
+@theme {
+  /* Fonts (variables come from next/font in layout.tsx) */
+  --font-heading: var(--font-geist), sans-serif;
+  --font-accent: var(--font-playfair), serif;
+
+  /* Brand colors */
+  --color-brand-deepest: #02061b;
+  --color-brand-deep: #081560;
+  --color-brand: #112dc7;
+  --color-brand-light: #0b1d81;
+  --color-lavender: #a1aef7;
+  --color-slate-lavender: #5e6691;
+  --color-muted-gray: #999999;
+
+  /* Fluid type scale - one token replaces the old text-[Xpx] md:text-[Ypx] lg:text-[Zpx] triplets */
+  --text-display: clamp(2rem, 1.72rem + 1.4vw, 3rem);
+  --text-display--line-height: clamp(2.25rem, 1.95rem + 1.5vw, 3.25rem);
+
+  --text-display-accent: clamp(1.625rem, 1.3rem + 1.6vw, 2.5rem);
+  --text-display-accent--line-height: 1.3;
+
+  --text-heading: clamp(1.75rem, 1.45rem + 1.5vw, 2.5rem);
+  --text-heading--line-height: clamp(2.25rem, 1.9rem + 1.75vw, 3.25rem);
+
+  --text-heading-price: clamp(1.625rem, 1.42rem + 1vw, 2.125rem);
+  --text-heading-price--line-height: clamp(2.25rem, 1.95rem + 1.5vw, 2.875rem);
+
+  --text-section: clamp(1.5rem, 1.28rem + 1.1vw, 2.25rem);
+  --text-section--line-height: clamp(2rem, 1.7rem + 1.5vw, 3rem);
+
+  --text-heading-lg: clamp(1.25rem, 1.13rem + 0.6vw, 1.5rem);
+  --text-heading-lg--line-height: 1.375;
+
+  --text-title: clamp(1.125rem, 0.95rem + 0.9vw, 1.75rem);
+  --text-title--line-height: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
+
+  --text-subtitle: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
+  --text-subtitle--line-height: clamp(1.5rem, 1.4rem + 0.3vw, 1.75rem);
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.5rem;
+
+  --text-body-sm: clamp(0.8125rem, 0.75rem + 0.3vw, 1rem);
+  --text-body-sm--line-height: clamp(1.5rem, 1.4rem + 0.3vw, 1.75rem);
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.25rem;
+
+  --text-link: clamp(0.6875rem, 0.65rem + 0.15vw, 0.875rem);
+  --text-link--line-height: clamp(1rem, 0.95rem + 0.15vw, 1.25rem);
+}
+
+body {
+  background: #000;
+}
+
+@layer components {
+  /* Ticker */
+  @keyframes ticker-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .ticker-track {
+    animation: ticker-scroll 25s linear infinite;
+  }
+
+  /* Btn */
+  .pushable {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    transition: filter 250ms;
+  }
+
+  .shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: hsl(0deg 0% 0% / 0.25);
+    will-change: transform;
+    transform: translateY(2px);
+    transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+  }
+
+  .edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: linear-gradient(
+      to left,
+      hsl(0deg 0% 70%) 0%,
+      hsl(0deg 0% 85%) 8%,
+      hsl(0deg 0% 85%) 92%,
+      hsl(0deg 0% 70%) 100%
+    );
+  }
+
+  .front {
+    display: block;
+    position: relative;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0px;
+    font-family: var(--font-heading);
+    color: black;
+    background: hsl(0deg 0% 95%);
+    will-change: transform;
+    transform: translateY(-4px);
+    transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+  }
+
+  .pushable:hover {
+    filter: brightness(110%);
+  }
+
+  .pushable:hover .front {
+    transform: translateY(-5px);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+  }
+  .pushable:active .front {
+    transform: translateY(-2px);
+    transition: transform 34ms;
+  }
+
+  .pushable:hover .shadow {
+    transform: translateY(4px);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+  }
+  .pushable:active .shadow {
+    transform: translateY(1px);
+    transition: transform 34ms;
+  }
+
+  .pushable:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* glass-btn */
+  .glass-btn {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.9);
+    border-radius: 9999px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 400;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    line-height: 20px;
+    letter-spacing: -0.01em;
+    font-family: var(--font-heading);
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .glass-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 2px 10px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-btn:hover::before {
+    opacity: 0.8;
+  }
+
+  .glass-btn:active {
+    transform: translateY(0px);
+    background: rgba(255, 255, 255, 0.12);
+    transition: all 100ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Underline thin */
+  .underline-thin {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+
+  /* Pricing highlight gradient */
+  .pricing-highlight {
+    background: linear-gradient(
+      180deg,
+      var(--color-brand-deepest) 0%,
+      var(--color-brand-light) 100%
+    );
+  }
+
+  /* Gradient box */
+  .gradient-box {
+    position: relative;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid transparent;
+    background: linear-gradient(#000, #000) padding-box,
+      linear-gradient(
+          92.18deg,
+          rgba(160, 172, 245, 0.5) 0.63%,
+          rgba(94, 102, 145, 0.5) 98.24%
+        )
+        border-box;
+    overflow: hidden;
+    transition: border 0.2s ease-in-out;
+  }
+
+  .gradient-box:hover {
+    background: linear-gradient(#000, #000) padding-box,
+      linear-gradient(
+          92.18deg,
+          rgba(160, 172, 245, 0.8) 0.63%,
+          rgba(94, 102, 145, 0.8) 98.24%
+        )
+        border-box;
+  }
+
+  /* Gradient top border utility */
+  .gradient-top-border {
+    position: relative;
+  }
+
+  .gradient-top-border::before {
+    content: "";
+    position: absolute;
+    width: 85%;
+    left: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(
+      92.18deg,
+      rgba(160, 172, 245, 0.5) 0.63%,
+      rgba(94, 102, 145, 0.5) 98.24%
+    );
+  }
+
+  .gradient-box:hover .gradient-top-border::before {
+    background: linear-gradient(
+      92.18deg,
+      rgba(160, 172, 245, 0.8) 0.63%,
+      rgba(94, 102, 145, 0.8) 98.24%
+    );
+  }
+}
