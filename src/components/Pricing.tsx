@@ -8,7 +8,7 @@ import { Reveal } from "@/components/ui/reveal";
 const plans = [
   {
     title: "Launch",
-    price: "₹10,000 – ₹15,000",
+    price: "₹10,000 - ₹15,000",
     oldPrice: "",
     discount: "",
     features: [
@@ -23,7 +23,7 @@ const plans = [
   },
   {
     title: "Operate",
-    price: "₹25,000 – ₹30,000",
+    price: "₹25,000 - ₹30,000",
     oldPrice: "",
     discount: "",
     features: [

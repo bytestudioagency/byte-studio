@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
+import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/config";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Byte Studio",
-    short_name: "Byte Studio",
-    description:
-      "Byte Studio builds websites with a working back office - admin dashboards for leads, orders, and registrations, not just the public-facing page.",
+    name: SITE_NAME,
+    short_name: SITE_NAME,
+    description: SITE_DESCRIPTION,
     start_url: "/",
     display: "standalone",
     background_color: "#000000",

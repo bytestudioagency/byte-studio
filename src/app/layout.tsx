@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Playfair_Display } from "next/font/google";
-import { SITE_URL } from "@/lib/config";
+import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from "@/lib/config";
 import "./globals.css";
 
 const geist = Geist({
@@ -15,14 +15,10 @@ const playfair = Playfair_Display({
   weight: ["400"],
 });
 
-const SITE_NAME = "Byte Studio";
-const SITE_DESCRIPTION =
-  "Byte Studio builds websites with a working back office - admin dashboards for leads, orders, and registrations, not just the public-facing page.";
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Byte Studio — Websites With a Working Back Office",
+    default: SITE_TITLE,
     template: "%s | Byte Studio",
   },
   description: SITE_DESCRIPTION,
@@ -30,7 +26,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Byte Studio — Websites With a Working Back Office",
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     url: "/",
     siteName: SITE_NAME,
@@ -39,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Byte Studio — Websites With a Working Back Office",
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     site: "@bytestudiohq",
     creator: "@bytestudiohq",
