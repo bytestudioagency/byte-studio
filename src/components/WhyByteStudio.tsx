@@ -1,5 +1,4 @@
 import React from "react";
-import { MEETING_LINK } from "@/lib/config";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Reveal } from "@/components/ui/reveal";
@@ -325,23 +324,6 @@ const WhyByteStudio: React.FC = () => {
             </div>
           </Reveal>
         </div>
-
-        {/* Button */}
-        <Reveal
-          className="mt-12 md:mt-14 lg:mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.5 }}
-          transition={{ duration: 0.5 }}
-        >
-          <a href={MEETING_LINK} target="_blank" rel="noopener noreferrer">
-            <button className="pushable focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded-xl">
-              <span className="shadow"></span>
-              <span className="edge"></span>
-              <span className="front"> Book a Call </span>
-            </button>
-          </a>
-        </Reveal>
       </div>
     </section>
   );

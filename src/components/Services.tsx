@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Code2, Smartphone, Palette, TrendingUp } from "lucide-react";
-import { MEETING_LINK } from "@/lib/config";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 
@@ -145,23 +144,14 @@ const Services: React.FC = () => {
                   {activeService.description}
                 </Text>
 
-                <div className="flex flex-wrap items-center gap-4 md:gap-6">
-                  <a href={MEETING_LINK} target="_blank" rel="noopener noreferrer">
-                    <button className="pushable">
-                      <span className="shadow"></span>
-                      <span className="edge"></span>
-                      <span className="front"> Book a Call </span>
-                    </button>
-                  </a>
-                  {activeService.deliveredFor && (
-                    <Text variant="gray" as="span">
-                      Delivered for{" "}
-                      <Text variant="bodyStrong" as="span">
-                        {activeService.deliveredFor}
-                      </Text>
+                {activeService.deliveredFor && (
+                  <Text variant="gray" as="span">
+                    Delivered for{" "}
+                    <Text variant="bodyStrong" as="span">
+                      {activeService.deliveredFor}
                     </Text>
-                  )}
-                </div>
+                  </Text>
+                )}
               </motion.div>
             </AnimatePresence>
           </div>

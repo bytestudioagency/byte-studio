@@ -104,10 +104,10 @@ body {
     border-radius: 12px;
     background: linear-gradient(
       to left,
-      hsl(0deg 0% 70%) 0%,
-      hsl(0deg 0% 85%) 8%,
-      hsl(0deg 0% 85%) 92%,
-      hsl(0deg 0% 70%) 100%
+      hsl(0deg 0% 45%) 0%,
+      hsl(0deg 0% 65%) 8%,
+      hsl(0deg 0% 65%) 92%,
+      hsl(0deg 0% 45%) 100%
     );
   }
 

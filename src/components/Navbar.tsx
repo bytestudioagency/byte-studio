@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   motion,
   useScroll,
@@ -147,9 +148,9 @@ const Navbar: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-12">
         {/* Logo */}
-        <div className="flex items-center space-x-2">
+        <Link href="/" className="flex items-center space-x-2">
           <Wordmark className="text-xl md:text-2xl" />
-        </div>
+        </Link>
 
         {/* Nav Links - Desktop */}
         <div className="hidden xl:flex space-x-8">

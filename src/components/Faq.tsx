@@ -82,7 +82,7 @@ const Faq: React.FC = () => {
           </Heading>
 
           {/* Accordion */}
-          <div className="max-w-prose md:max-w-2xl lg:max-w-3xl mx-auto space-y-4 md:space-y-5">
+          <div className="space-y-4 md:space-y-5">
             {faqs.map((faq, index) => (
               <div key={index} className="gradient-box">
                 <button

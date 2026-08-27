@@ -1,9 +1,28 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import { motion, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
 
 const SPRING = { stiffness: 250, damping: 30, mass: 0.5 };
+
+// SmoothScroll fakes scrolling by pinning content with `position: fixed` and
+// translating it via this spring, so native `position: sticky` inside it
+// never engages (there's no real scroll container for it to stick within).
+// Sections that need to pin something on scroll must counter-animate using
+// this same value instead - exposed here so they can.
+const SmoothScrollYContext = createContext<MotionValue<number> | null>(null);
+
+export function useSmoothScrollY() {
+  return useContext(SmoothScrollYContext);
+}
 
 // Momentum-scroll only reads as an improvement with a mouse/trackpad. Touch
 // scrolling is already smooth natively, and layering a fixed-position spring
@@ -54,7 +73,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   }
 
   return (
-    <>
+    <SmoothScrollYContext.Provider value={smoothY}>
       <motion.div
         ref={contentRef}
         style={{ y }}
@@ -64,6 +83,6 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       </motion.div>
       {/* Preserves native scroll range now that content is taken out of flow */}
       <div style={{ height }} aria-hidden="true" />
-    </>
+    </SmoothScrollYContext.Provider>
   );
 }

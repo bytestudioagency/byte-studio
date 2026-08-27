@@ -98,7 +98,7 @@ const Pricing: React.FC = () => {
               whileHover={{ y: -6 }}
               className={`relative rounded-3xl p-6 md:p-7 lg:p-8 pt-8 flex flex-col justify-between min-h-[520px] md:min-h-[560px] transition-colors duration-300 ${
                 plan.highlight
-                  ? "pricing-highlight border border-blue-500/40 shadow-[0_0_60px_-15px_rgba(37,99,235,0.6)] lg:scale-[1.05] lg:min-h-[600px] z-10"
+                  ? "pricing-highlight border border-blue-500/40 shadow-[0_0_30px_-14px_rgba(37,99,235,0.35)] lg:scale-[1.05] lg:min-h-[600px] z-10"
                   : "bg-white/[0.03] border border-white/10 hover:border-white/20"
               }`}
             >
