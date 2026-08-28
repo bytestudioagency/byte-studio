@@ -16,7 +16,7 @@ export function CaseStudyHeroMedia({
 }) {
   const frame = compact
     ? "relative w-full h-full"
-    : "relative aspect-video rounded-3xl overflow-hidden border border-white/10";
+    : "relative aspect-[16/10] rounded-xl overflow-hidden border border-white/10";
 
   if (media.kind === "photo") {
     return (
@@ -28,6 +28,7 @@ export function CaseStudyHeroMedia({
           sizes={compact ? "260px" : "(min-width: 1024px) 1024px, 100vw"}
           className="object-cover"
           priority={!compact}
+          unoptimized
         />
       </div>
     );
@@ -48,6 +49,7 @@ export function CaseStudyHeroMedia({
             sizes={compact ? "260px" : "(min-width: 1024px) 1024px, 100vw"}
             className="object-contain"
             priority={!compact}
+            unoptimized
           />
         </div>
       </div>

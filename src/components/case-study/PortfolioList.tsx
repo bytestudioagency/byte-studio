@@ -83,7 +83,7 @@ export function PortfolioList({ studies }: { studies: CaseStudy[] }) {
               <motion.div
                 key={studies[hovered].slug}
                 aria-hidden="true"
-                className="pointer-events-none fixed z-50 w-64 h-40 rounded-2xl overflow-hidden shadow-2xl shadow-black/60"
+                className="pointer-events-none fixed z-50 w-64 h-40 rounded-xl overflow-hidden shadow-2xl shadow-black/60"
                 style={{
                   left: springX,
                   top: springY,

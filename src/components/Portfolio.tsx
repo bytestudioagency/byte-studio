@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import {
   motion,
+  motionValue,
   useMotionValue,
   useMotionValueEvent,
   useScroll,
@@ -39,7 +40,8 @@ const useSafeReducedMotion = () => {
 
 type WorkMedia =
   | { kind: "photo"; src: string }
-  | { kind: "brandmark"; src: string };
+  | { kind: "brandmark"; src: string }
+  | { kind: "placeholder"; monogram: string };
 
 interface Work {
   title: string;
@@ -56,37 +58,37 @@ const works: Work[] = [
     title: "Apna Store",
     slug: "apna-store",
     hook: "Replaced spreadsheet-run store ops with one connected system.",
-    problem: "Manual, disconnected operations",
-    build: "Storefront + admin back office",
-    outcome: "One system, real-time reporting",
-    media: { kind: "brandmark", src: "/works/apna-store-icon.png" },
+    problem: "Manual, disconnected operations across stock, suppliers, and billing",
+    build: "A customer storefront plus a full admin back office",
+    outcome: "One connected system with real-time stock and sales reporting",
+    media: { kind: "photo", src: "/portfolio/apna-store/1.png" },
   },
   {
     title: "Turant News",
     slug: "turant",
     hook: "An end-to-end news platform, from posting to ad-driven monetization.",
-    problem: "Needed social mechanics, not just a feed",
-    build: "Mobile app + admin & moderation dashboard",
-    outcome: "Content, moderation & ads in one loop",
-    media: { kind: "photo", src: "/works/turant.png" },
+    problem: "Needed real social mechanics and moderation, not just a passive feed",
+    build: "A mobile app paired with an admin and moderation dashboard",
+    outcome: "Content, moderation, and ad monetization running in one loop",
+    media: { kind: "photo", src: "/portfolio/turant/1.png" },
   },
   {
     title: "StayFinder",
     slug: "stayfinder",
     hook: "A full booking lifecycle that keeps availability honest automatically.",
-    problem: "Unpaid holds locking up inventory",
-    build: "Booking site + auto-expiring holds",
-    outcome: "Accurate availability, zero manual cleanup",
-    media: { kind: "photo", src: "/works/stayfinder.png" },
+    problem: "Unpaid holds could lock up villa inventory indefinitely",
+    build: "A booking site where unpaid holds expire automatically",
+    outcome: "Accurate availability with zero manual cleanup required",
+    media: { kind: "photo", src: "/portfolio/stay-finder/1.png" },
   },
   {
     title: "Keanas Skin Clinic",
     slug: "keanas-skin-clinic",
     hook: "A fast landing page built to convert paid social traffic.",
-    problem: "No ad-ready web presence",
-    build: "Single-page site + Pixel tracking",
-    outcome: "Measurable ad spend, not blind spend",
-    media: { kind: "photo", src: "/works/keanas.webp" },
+    problem: "No ad-ready web presence to convert paid social traffic",
+    build: "A single-page site with Facebook Pixel tracking built in",
+    outcome: "Measurable ad spend instead of running campaigns blind",
+    media: { kind: "photo", src: "/portfolio/keanas/1.png" },
   },
 ];
 
@@ -97,15 +99,20 @@ const stages: { label: string; key: keyof Pick<Work, "problem" | "build" | "outc
 ];
 
 // Each card's section (`h-[…]` on the wrapper below) is sized as that
-// card's own height (660 / 520 / 560, matching the card's breakpoints)
-// plus a ~260px buffer, so there's real scroll room for it to pin and
-// settle before the next card's turn begins. This has to be a fixed
-// pixel amount, not vh-based: vh scales with the viewport, but the
+// card's nominal min-height (600 / 460 / 500, matching the card's
+// breakpoints) plus a ~260px buffer, so there's real scroll room for it
+// to pin and settle before the next card's turn begins. This has to be a
+// fixed pixel amount, not vh-based: vh scales with the viewport, but the
 // card's height doesn't, so on a short mobile viewport a vh-sized
 // section ended up shorter than the (fixed-height) card it holds, which
 // broke the last card's release point and let the CTA underneath bleed
-// through it. The container's total height below is `works.length`
-// times these same per-breakpoint numbers - if the card heights or
+// through it. The card itself uses `min-h-` rather than `h-` so long
+// wrapped copy (mobile stacks image + text in one column) can grow past
+// the nominal size instead of getting clipped by `overflow-hidden` - the
+// pin math below re-measures the card's real height live, so it still
+// tracks correctly even when a card grows taller than this nominal
+// number. The container's total height below is `works.length` times
+// these same per-breakpoint numbers - if the card heights or
 // `works.length` change, update both together.
 
 // Distance from the viewport top where each card pins - keep in sync with
@@ -141,23 +148,39 @@ const WorkMediaPanel = ({
           alt={title}
           fill
           sizes="(min-width: 768px) 45vw, 100vw"
-          className="object-cover"
+          className="object-contain rounded-lg"
+          unoptimized
         />
       </motion.div>
     );
   }
 
+  if (media.kind === "brandmark") {
+    return (
+      <div className="absolute inset-0 bg-gradient-to-br from-[#08186D] to-black flex items-center justify-center p-10 md:p-12">
+        <motion.div className="relative w-full h-full" style={{ y: parallaxY }}>
+          <Image
+            src={media.src}
+            alt={title}
+            fill
+            sizes="(min-width: 768px) 45vw, 100vw"
+            className="object-contain"
+            unoptimized
+          />
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
-    <div className="absolute inset-0 bg-gradient-to-br from-[#08186D] to-black flex items-center justify-center p-10 md:p-12">
-      <motion.div className="relative w-full h-full" style={{ y: parallaxY }}>
-        <Image
-          src={media.src}
-          alt={title}
-          fill
-          sizes="(min-width: 768px) 45vw, 100vw"
-          className="object-contain"
-        />
-      </motion.div>
+    <div className="absolute inset-0 bg-gradient-to-br from-[#08186D] to-black flex items-center justify-center">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(161,174,247,0.18),transparent_55%)]" />
+      <motion.span
+        className="relative font-accent italic font-normal leading-none text-[clamp(3rem,10vw,6rem)] text-[color-mix(in_srgb,var(--color-lavender),white_10%)] select-none"
+        style={{ y: parallaxY }}
+      >
+        {media.monogram}
+      </motion.span>
     </div>
   );
 };
@@ -261,7 +284,7 @@ const ParallaxCard = ({
   const fanOffset = useTransform(scrollYProgress, [index * RANGE_STEP, 1], ["0%", `${targetFanOffset}%`]);
 
   return (
-    <div ref={sectionRef} className="relative h-[920px] md:h-[780px] lg:h-[820px]">
+    <div ref={sectionRef} className="relative h-[860px] md:h-[720px] lg:h-[760px]">
       <motion.div
         ref={frameRef}
         className={smoothScrollY ? "relative" : "sticky top-60"}
@@ -270,14 +293,16 @@ const ParallaxCard = ({
         <motion.div
           style={{ scale, y: fanOffset, willChange: "transform" }}
           aria-hidden={!isActive}
-          className={`relative h-[660px] md:h-[520px] lg:h-[560px] grid grid-cols-1 md:grid-cols-2 overflow-hidden rounded-3xl border border-white/10 bg-neutral-900 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)] origin-top ${
+          className={`relative min-h-[600px] md:min-h-[460px] lg:min-h-[500px] grid grid-cols-1 md:grid-cols-2 overflow-hidden rounded-3xl border border-white/10 bg-neutral-900 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)] origin-top ${
             isActive ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
           {/* Content */}
-          <div className="relative flex flex-col justify-between p-6 md:p-8 lg:p-10 order-2 md:order-1">
-            <div className="absolute top-0 left-0 w-2/3 h-[1px] bg-gradient-to-r from-[#A1AEF7] to-transparent pointer-events-none" />
-
+          <div
+            className={`relative flex flex-col justify-between p-6 md:p-8 lg:p-10 order-2 ${
+              index % 2 === 0 ? "md:order-1" : "md:order-2"
+            }`}
+          >
             <div className="relative z-10">
               <Heading as="h3" variant="title">
                 {work.title}
@@ -313,8 +338,12 @@ const ParallaxCard = ({
           </div>
 
           {/* Media */}
-          <div className="relative m-4 md:m-5 rounded-2xl overflow-hidden order-1 md:order-2 min-h-[180px]">
-            <WorkMediaPanel media={work.media} title={work.title} parallaxY={imageY} />
+          <div
+            className={`relative m-4 md:m-5 rounded-xl overflow-hidden order-1 min-h-[180px] ${
+              index % 2 === 0 ? "md:order-2" : "md:order-1"
+            }`}
+          >
+            <WorkMediaPanel media={work.media} title={`${work.title} — ${work.hook}`} parallaxY={imageY} />
           </div>
         </motion.div>
       </motion.div>
@@ -322,17 +351,25 @@ const ParallaxCard = ({
   );
 };
 
+// Inert MotionValue shared by every card in the reduced-motion fallback
+// below - WorkMediaPanel requires one for its (unused, here) parallax
+// transform, but nothing ever writes to it.
+const staticParallaxY = motionValue(0);
+
 // Simple, motion-free fallback for prefers-reduced-motion: every card in
 // normal document flow, no scroll pinning, no parallax.
 const StaticStack = () => (
   <div className="max-w-6xl mx-auto mt-10 md:mt-14 space-y-8">
-    {works.map((work) => (
+    {works.map((work, index) => (
       <div
         key={work.title}
         className="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900 grid grid-cols-1 md:grid-cols-2"
       >
-        <div className="relative flex flex-col justify-between p-6 md:p-8 lg:p-10 order-2 md:order-1">
-          <div className="absolute top-0 left-0 w-2/3 h-[1px] bg-gradient-to-r from-[#A1AEF7] to-transparent pointer-events-none" />
+        <div
+          className={`relative flex flex-col justify-between p-6 md:p-8 lg:p-10 order-2 ${
+            index % 2 === 0 ? "md:order-1" : "md:order-2"
+          }`}
+        >
           <div className="relative z-10">
             <Heading as="h3" variant="title">
               {work.title}
@@ -364,28 +401,12 @@ const StaticStack = () => (
             <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
           </Link>
         </div>
-        <div className="relative m-4 md:m-5 rounded-2xl overflow-hidden order-1 md:order-2 min-h-[220px]">
-          {work.media.kind === "photo" ? (
-            <Image
-              src={work.media.src}
-              alt={work.title}
-              fill
-              sizes="(min-width: 768px) 45vw, 100vw"
-              className="object-cover"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[#08186D] to-black flex items-center justify-center p-10 md:p-12">
-              <div className="relative w-full h-full">
-                <Image
-                  src={work.media.src}
-                  alt={work.title}
-                  fill
-                  sizes="(min-width: 768px) 45vw, 100vw"
-                  className="object-contain"
-                />
-              </div>
-            </div>
-          )}
+        <div
+          className={`relative m-4 md:m-5 rounded-xl overflow-hidden order-1 min-h-[220px] ${
+            index % 2 === 0 ? "md:order-2" : "md:order-1"
+          }`}
+        >
+          <WorkMediaPanel media={work.media} title={`${work.title} — ${work.hook}`} parallaxY={staticParallaxY} />
         </div>
       </div>
     ))}
@@ -453,7 +474,7 @@ const Portfolio = () => {
         ) : (
           <div
             ref={containerRef}
-            className="relative max-w-6xl mx-auto h-[3680px] md:h-[3120px] lg:h-[3280px]"
+            className="relative max-w-6xl mx-auto h-[3440px] md:h-[2880px] lg:h-[3040px]"
           >
             {works.map((work, index) => (
               <ParallaxCard
@@ -472,7 +493,7 @@ const Portfolio = () => {
 
         {/* CTA */}
         <Reveal
-          className="mt-16 md:mt-20 lg:mt-24 flex flex-col items-center text-center gap-5 md:gap-6"
+          className="mt-16 md:mt-20 lg:mt-24 flex flex-col sm:flex-row items-center justify-center text-center gap-4 sm:gap-5"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.5 }}
@@ -487,9 +508,13 @@ const Portfolio = () => {
           </a>
           <Link
             href="/portfolio"
-            className="text-sm text-lavender hover:text-white underline underline-offset-4 decoration-1 transition-colors"
+            className="group inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/[0.03] px-6 py-3 text-base font-medium text-white/90 transition-colors hover:border-white/30 hover:bg-white/[0.07] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
           >
             See full portfolio
+            <ArrowRight
+              className="w-4 h-4 transition-transform group-hover:translate-x-1"
+              strokeWidth={1.75}
+            />
           </Link>
         </Reveal>
       </motion.div>

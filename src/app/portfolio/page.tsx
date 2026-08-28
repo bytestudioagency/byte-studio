@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { caseStudies } from "@/lib/case-studies";
+import { caseStudies, getOgImage } from "@/lib/case-studies";
 import { SITE_URL, SITE_NAME } from "@/lib/config";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -51,6 +51,7 @@ const collectionJsonLd = {
       position: index + 1,
       name: study.title,
       url: `${SITE_URL}/portfolio/${study.slug}`,
+      image: `${SITE_URL}${getOgImage(study)}`,
     })),
   },
 };

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Reveal } from "@/components/ui/reveal";
-import type { CaseStudy, CaseStudyStat } from "@/lib/case-studies";
+import type { CaseStudy } from "@/lib/case-studies";
 
 const revealProps = {
   initial: { opacity: 0, y: 24 },
@@ -23,17 +23,17 @@ export function CaseStudyStageStrip({ summary }: { summary: CaseStudy["summary"]
       {stages.map(({ label, value }) => (
         <div
           key={label}
-          className="grid grid-cols-[5rem_1fr] sm:grid-cols-[8rem_1fr] items-baseline gap-4 sm:gap-8 py-4 sm:py-5 border-b border-white/10"
+          className="grid grid-cols-1 lg:grid-cols-[minmax(0,220px)_1fr] gap-3 lg:gap-10 py-8 md:py-10 border-b border-white/10"
         >
           <Text
             variant="lavender"
-            className="text-caption uppercase tracking-[0.14em]"
+            className="text-caption uppercase tracking-[0.14em] lg:pt-2"
           >
             {label}
           </Text>
-          <Heading as="p" variant="subtitle" className="text-white/90">
+          <Text variant="gray" className="max-w-2xl leading-relaxed">
             {value}
-          </Heading>
+          </Text>
         </div>
       ))}
     </Reveal>
@@ -144,28 +144,18 @@ export function CaseStudyFeatureGroups({
   );
 }
 
-export function CaseStudyStatGrid({ stats }: { stats: CaseStudyStat[] }) {
+export function CaseStudyStackList({ stack }: { stack: string[] }) {
   return (
-    <Reveal
-      {...revealProps}
-      className="flex flex-wrap gap-x-10 gap-y-8 sm:gap-x-14"
-    >
-      {stats.map((stat, index) => (
-        <div
-          key={stat.label}
-          className={`flex flex-col gap-1.5 max-w-[14rem] ${
-            index > 0 ? "sm:pl-10 sm:border-l sm:border-white/10" : ""
-          }`}
+    <ul className="flex flex-wrap gap-2.5">
+      {stack.map((item) => (
+        <li
+          key={item}
+          className="text-body-sm text-white/70 border border-white/10 rounded-full px-4 py-1.5"
         >
-          <Heading as="span" variant="price" className="text-white">
-            {stat.value}
-          </Heading>
-          <Text variant="gray" className="leading-snug">
-            {stat.label}
-          </Text>
-        </div>
+          {item}
+        </li>
       ))}
-    </Reveal>
+    </ul>
   );
 }
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { MEETING_LINK, SITE_URL, SITE_NAME } from "@/lib/config";
-import { caseStudies, getCaseStudy, getAdjacentCaseStudies, type CaseStudy } from "@/lib/case-studies";
+import { caseStudies, getCaseStudy, getAdjacentCaseStudies, getOgImage } from "@/lib/case-studies";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Reveal } from "@/components/ui/reveal";
@@ -12,16 +12,10 @@ import {
   CaseStudyStageStrip,
   CaseStudySection,
   CaseStudyFeatureGroups,
-  CaseStudyStatGrid,
+  CaseStudyStackList,
   CaseStudyCallout,
 } from "@/components/case-study/CaseStudySections";
 import { CaseStudyNav } from "@/components/case-study/CaseStudyNav";
-
-// Real screenshots make a better social-share preview than the site
-// default; brandmark/placeholder hero media falls back to it instead.
-function ogImageFor(study: CaseStudy): string {
-  return study.heroMedia.kind === "photo" ? study.heroMedia.src : "/og.png";
-}
 
 export function generateStaticParams() {
   return caseStudies.map((study) => ({ slug: study.slug }));
@@ -35,7 +29,7 @@ export async function generateMetadata({
   if (!study) return {};
 
   const url = `/portfolio/${study.slug}`;
-  const image = ogImageFor(study);
+  const image = getOgImage(study);
 
   return {
     title: study.title,
@@ -95,8 +89,11 @@ export default async function CaseStudyPage({ params }: PageProps<"/portfolio/[s
       {
         "@type": "CreativeWork",
         name: study.title,
+        headline: study.title,
         description: study.tagline,
         url: `${SITE_URL}/portfolio/${study.slug}`,
+        image: `${SITE_URL}${getOgImage(study)}`,
+        keywords: study.stack.join(", "),
         creator: {
           "@type": "Organization",
           name: SITE_NAME,
@@ -134,22 +131,14 @@ export default async function CaseStudyPage({ params }: PageProps<"/portfolio/[s
           <Heading as="h1" variant="display" className="mb-5 max-w-3xl">
             {study.title}
           </Heading>
-          <Text variant="gray" className="max-w-2xl leading-relaxed mb-6">
+          <Text variant="gray" className="max-w-2xl leading-relaxed">
             {study.tagline}
-          </Text>
-
-          <Text variant="gray" className="pt-6 border-t border-white/10">
-            <Text as="span" variant="lavender">
-              {study.meta.role}
-            </Text>
-            {"  —  "}
-            {study.meta.stack.join(" · ")}
           </Text>
         </Reveal>
       </div>
 
-      <div className="max-w-6xl mx-auto mb-16 md:mb-24">
-        <CaseStudyHeroMedia media={study.heroMedia} title={study.title} />
+      <div className="max-w-5xl mx-auto mb-16 md:mb-24">
+        <CaseStudyHeroMedia media={study.heroMedia} title={`${study.title} — ${study.tagline}`} />
       </div>
 
       <div className="max-w-6xl mx-auto">
@@ -158,22 +147,35 @@ export default async function CaseStudyPage({ params }: PageProps<"/portfolio/[s
         </div>
 
         <div className="mb-16 md:mb-24">
-          <CaseStudySection
-            eyebrow="The Challenge"
-            heading="What we walked into"
-            paragraphs={[study.challenge]}
-          />
-        </div>
-
-        <div className="mb-16 md:mb-24">
           <CaseStudySection eyebrow="What We Built" heading="Key features">
             <CaseStudyFeatureGroups groups={study.keyFeatures} />
           </CaseStudySection>
         </div>
 
+        {study.gallery && study.gallery.length > 0 && (
+          <div className="mb-16 md:mb-24">
+            <CaseStudySection eyebrow="Gallery" heading="More of the build">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+                {study.gallery.map((src, galleryIndex) => (
+                  <div
+                    key={src}
+                    className="relative aspect-video rounded-xl overflow-hidden border border-white/10 bg-[#080B21]"
+                  >
+                    <CaseStudyHeroMedia
+                      media={{ kind: "photo", src }}
+                      title={`${study.title} — screenshot ${galleryIndex + 1}`}
+                      compact
+                    />
+                  </div>
+                ))}
+              </div>
+            </CaseStudySection>
+          </div>
+        )}
+
         <div className="mb-16 md:mb-24">
-          <CaseStudySection eyebrow="At a Glance" heading="The numbers">
-            <CaseStudyStatGrid stats={study.stats} />
+          <CaseStudySection eyebrow="Tech Stack" heading="What it's built with">
+            <CaseStudyStackList stack={study.stack} />
           </CaseStudySection>
         </div>
 
