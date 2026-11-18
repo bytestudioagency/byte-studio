@@ -2,7 +2,6 @@ import { Hero } from "@/components/Hero";
 import { Marquee } from "@/components/Marquee";
 import { Nav } from "@/components/Nav";
 import { Services } from "@/components/Services";
-import { Stats } from "@/components/Stats";
 import { WhyUs } from "@/components/WhyUs";
 
 export default function Home() {
@@ -14,7 +13,6 @@ export default function Home() {
         <WhyUs />
         <Services />
         <Marquee />
-        <Stats />
       </main>
     </>
   );
