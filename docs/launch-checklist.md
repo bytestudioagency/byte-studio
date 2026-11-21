@@ -1,37 +1,35 @@
-# Hendzen launch checklist
+# Byte Studio launch checklist
 
-Last updated 17 November 2026.
+Last updated 21 November 2026.
 
 What still has to be done by hand before and after the site goes live. Tick items off as you go.
 
+## Filled in from the old Byte Studio site
+
+Brand, domain (`https://www.bytestudio.website`), booking link, X and LinkedIn profiles, client logos, the six case studies with screenshots, services, process, pricing and FAQ now come from the old Byte Studio site. The price estimator was removed. Case studies keep the old addresses, `/portfolio/<slug>`, so existing links still work.
+
 ## Fill in before launch
 
-Nine things in the code are still placeholders. All but the last sit in `src/lib/site.ts`, each marked with a `TODO` comment.
-
-- [ ] **Contact email.** `site.email` is `hello@hendzen.com`. Set it to an inbox that exists and that you read. It also appears in the structured data that search engines read.
-- [ ] **Cal.com link.** Paste it into `site.bookingUrl`. The "Book a 20-min call" button appears in the contact section once it is set.
-- [ ] **Domain.** `site.url` is assumed to be `https://hendzen.com`. It feeds the sitemap, robots file, canonical links, structured data and share previews.
-- [ ] **Social profiles.** `site.socials` is empty, so the footer shows none. Add LinkedIn, GitHub or X links. They also go into the structured data (`sameAs`), which helps Google link the profiles to the brand, so add at least LinkedIn.
-- [ ] **City (optional).** `site.city` is empty. Set the city you work from, for example "Bengaluru", and it is added to the structured data as your address. This helps with "near me" and city searches. Leave it empty to show only "serves India".
-- [ ] **Client logos.** `clients` holds six invented company names (Northpeak, Orbitly and so on). Replace them with real clients or remove the logo strip.
-- [ ] **Projects and case studies.** `projects` holds three invented products: Ledgerly, Pulse and Crate. Their `challenge`, `solution` and `results` text on the case study pages is also invented. Replace all of it with real work, and set `href` where a product is live.
-- [ ] **Prices.** `pricing` and `estimator` hold placeholder rupee figures. The FAQ answer "How much will my project cost?" quotes a range of 2.5 to 6 lakh, so keep it in step with whatever you set.
-- [ ] **Product mockups.** The dashboard, phone and storefront drawings in `src/components/Mocks.tsx` belong to the invented projects. Swap in real screenshots when you swap the projects.
+- [x] **Contact email.** `site.email` is `bytestudioagency@gmail.com`. It appears in the contact section, menu, footer, legal pages and structured data. Set it to an empty string to hide it everywhere.
+- [ ] **City (optional).** `site.city` is empty. Set the city you work from and it is added to the structured data as your address.
+- [ ] **Live links.** Set `href` on any project in `projects` that is live, and a "Live product" link appears on its card.
+- [ ] **Case study numbers.** Each project's `results` row uses facts taken from the old case study text (for example "5 min" hold expiry). Swap in real outcome numbers if you have them.
+- [x] **Share image.** `src/app/opengraph-image.jpg` is a 1200x630 screenshot of the new hero. Retake it if the hero changes.
 
 ## Legal pages
 
 The privacy policy and terms are a starting template, not legal advice. The text is in `src/lib/legal.ts`.
 
-- [ ] **Registered business name.** `legal.entity` is "Hendzen". Set your registered name, for example "Hendzen Technologies LLP".
+- [ ] **Registered business name.** `legal.entity` is "Byte Studio". Set your registered name if it differs.
 - [ ] **Court city.** `legal.courts` is "India". Set the city whose courts handle disputes.
 - [ ] **Review.** Have someone qualified read both pages before you rely on them.
-- [ ] **Confirm the default terms.** The five terms below were chosen as defaults. Change any that do not match how you work.
+- [ ] **Confirm the default terms.** The terms below were chosen as defaults. Change any that do not match how you work.
 
 | Term | Default |
 | --- | --- |
-| Invoice due date | 7 days from invoice |
-| Ownership | Passes to the client per milestone, when that milestone is paid |
-| Retainer cancellation | Takes effect at the end of the month already paid for |
+| Invoice due date | 7 days from invoice (UPI or bank transfer) |
+| Post-launch support | 15 days of bug fixes and small tweaks |
+| Ownership | Passes to the client as the agreed payments are made |
 | Liability | Capped at the fees paid for the project |
 | Portfolio | You may show the finished work unless the client asks you not to |
 
@@ -39,12 +37,10 @@ The privacy policy also promises to delete enquiries that do not become projects
 
 ## Outside the code
 
-- [ ] **Look at the new pages.** Run `npm run dev` and open `/work/ledgerly`, `/privacy`, `/terms` and a made-up address for the 404. They were checked to build and serve, not for how they look in a browser.
-- [ ] **Commit the work.** The repository still has only the initial Create Next App commit.
+- [ ] **Look at the new pages.** Run `npm run dev` and open `/portfolio/apna-store`, `/privacy`, `/terms` and a made-up address for the 404. They were checked to build and serve, not for how they look in a browser.
 - [ ] **Domain.** Register the domain if you have not, and point its DNS at your host.
 - [ ] **Hosting.** Deploy the site to a host that runs Next.js and connect the domain.
-- [ ] **Mailbox.** Create the inbox behind the contact address on your domain, and send it a test email.
-- [ ] **Cal.com event.** Create a 20-minute event, since the button says "Book a 20-min call". Add intake questions for what they want to build, budget and timeline. This replaces a contact form.
+- [ ] **Booking page.** Check that the meeting link asks for what they want to build, budget and timeline. It replaces a contact form.
 
 ## After launch
 
@@ -56,4 +52,4 @@ The privacy policy also promises to delete enquiries that do not become projects
 
 ## Known gap
 
-An unknown case study address such as `/work/nope` shows the 404 page and is marked noindex, but returns HTTP 200 rather than 404. The setting that would fix it (`dynamicParams`) is not available while `cacheComponents` is enabled in `next.config.ts`. Other unknown URLs return a proper 404.
+An unknown case study address such as `/portfolio/nope` shows the 404 page and is marked noindex, but returns HTTP 200 rather than 404. The setting that would fix it (`dynamicParams`) is not available while `cacheComponents` is enabled in `next.config.ts`. Other unknown URLs return a proper 404.
