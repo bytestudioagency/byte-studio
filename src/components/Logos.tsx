@@ -28,10 +28,11 @@ export function Logos() {
         <div className="flex w-max animate-marquee [animation-duration:36s] group-hover:[animation-play-state:paused]">
           {[0, 1, 2, 3].map((dup) => (
             <ul key={dup} aria-hidden={dup > 0} className="flex shrink-0 items-center">
-              {clients.map((c, i) => (
-                <li key={c.name} className="flex h-12 items-center pr-14 text-zinc-500 md:pr-20">
+              {[...clients, ...clients].map((c, i) => (
+                <li key={`${c.name}-${i}`} className="flex h-12 items-center pr-14 text-zinc-500 md:pr-20">
                   {c.logo ? (
-                    <img src={c.logo} alt={c.name} className="max-h-7 max-w-28 opacity-60 grayscale" />
+                    // The supplied files are dark artwork, so they are inverted to read on the dark page.
+                    <img src={c.logo} alt={c.name} className="max-h-9 max-w-32 opacity-70 brightness-90 grayscale invert" />
                   ) : (
                     <span className="flex items-center gap-2.5 text-xl font-semibold tracking-[-0.03em] whitespace-nowrap">
                       <Glyph index={i} />

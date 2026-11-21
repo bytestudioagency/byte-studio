@@ -1,8 +1,7 @@
 "use client";
 
-import { AnimatePresence, m, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
-import { heroWords } from "@/lib/site";
+import { m } from "motion/react";
+import { hero } from "@/lib/site";
 import { EASE } from "./ui";
 
 // Each line rises out of its clip via the CSS .hero-rise keyframe (globals.css), staggered by 0.12s,
@@ -13,49 +12,21 @@ const line = (i: number) => ({ className: "block hero-rise", style: { animationD
 const clip = "block overflow-hidden pt-[0.06em] pb-[0.16em] -mb-[0.16em] pl-[0.06em] -ml-[0.06em]";
 
 export function HeroTitle() {
-  const reduce = useReducedMotion();
-  const [i, setI] = useState(0);
-
-  useEffect(() => {
-    if (reduce) return;
-    const id = setInterval(() => setI((v) => (v + 1) % heroWords.length), 2600);
-    return () => clearInterval(id);
-  }, [reduce]);
-
   return (
     <h1
-      aria-label={`Your ${heroWords[0]}, shipped in six weeks.`}
-      className="max-w-5xl text-[clamp(2.9rem,9vw,7.25rem)] leading-[0.92] font-medium tracking-[-0.045em]"
+      aria-label={`${hero.lines.join(" ")} ${hero.accent}`}
+      className="max-w-5xl text-[clamp(2.6rem,8.4vw,6.75rem)] leading-[0.92] font-medium tracking-[-0.045em]"
     >
-      <span aria-hidden className={clip}>
-        <span {...line(0)}>
-          Your{" "}
-          {/* Rotating product type */}
-          <span className="relative block overflow-hidden pb-[0.16em] -mb-[0.16em] sm:inline-block sm:align-bottom">
-            <AnimatePresence mode="popLayout" initial={false}>
-              <m.span
-                key={heroWords[i]}
-                className="inline-block whitespace-nowrap"
-                initial={{ y: "105%", opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: "-105%", opacity: 0 }}
-                transition={{ duration: 0.75, ease: EASE }}
-              >
-                {heroWords[i]},
-              </m.span>
-            </AnimatePresence>
-          </span>
+      {hero.lines.map((text, i) => (
+        <span key={text} aria-hidden className={clip}>
+          <span {...line(i)}>{text}</span>
         </span>
-      </span>
+      ))}
 
       <span aria-hidden className={clip}>
-        <span {...line(1)}>shipped in</span>
-      </span>
-
-      <span aria-hidden className={clip}>
-        <span {...line(2)}>
-          <span className="relative inline-block font-serif font-normal tracking-[-0.02em] whitespace-nowrap text-lime italic">
-            six weeks.
+        <span {...line(hero.lines.length)}>
+          <span className="relative inline-block font-serif font-normal tracking-[-0.02em] text-lime italic sm:whitespace-nowrap">
+            {hero.accent}
             {/* Hand-drawn underline that draws itself in */}
             <svg
               viewBox="0 0 300 14"

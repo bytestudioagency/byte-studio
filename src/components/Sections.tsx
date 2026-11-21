@@ -1,28 +1,27 @@
-import { CheckIcon } from "@phosphor-icons/react/dist/ssr";
+import { CheckIcon, GlobeIcon, InstagramLogoIcon, LinkedinLogoIcon, XLogoIcon } from "@phosphor-icons/react/dist/ssr";
+import type { Icon } from "@phosphor-icons/react";
+import Image from "next/image";
 import Link from "next/link";
 import { ViewTransition, type CSSProperties } from "react";
-import { container, pricing, pricingIncludes, process, projects, site } from "@/lib/site";
-import { DashboardMock, PhoneMock, StoreMock } from "./Mocks";
+import { container, pricing, pricingIncludes, projects, site } from "@/lib/site";
 import { Arrow, Button, Reveal, Rise, SectionHead, Shell } from "./ui";
+import { ProcessTimeline } from "./ProcessTimeline";
 import { WorkCard } from "./WorkCard";
 
 /* ------------------------------------ Work ------------------------------------ */
 
-export function ProjectVisual({ id }: { id: string }) {
-  if (id === "pulse")
-    return (
-      <div className="flex items-end justify-center gap-5">
-        <div className="hidden translate-y-10 -rotate-6 opacity-60 transition-transform duration-700 ease-spring group-hover:-rotate-3 group-data-active:-rotate-3 lg:block">
-          <PhoneMock />
-        </div>
-        <div className="rotate-3 transition-transform duration-700 ease-spring group-hover:rotate-0 group-data-active:rotate-0">
-          <PhoneMock />
-        </div>
-      </div>
-    );
+/** A project's main screenshot, tilted in its frame; straightens on hover (or scroll, on touch). */
+export function ProjectVisual({ project, sizes, preload = false }: { project: { name: string; image: string }; sizes: string; preload?: boolean }) {
   return (
-    <div className="w-full max-w-xl -rotate-2 overflow-hidden rounded-[1.5rem] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.9)] ring-1 ring-white/10 transition-transform duration-700 ease-spring group-hover:scale-[1.03] group-hover:rotate-0 group-data-active:scale-[1.03] group-data-active:rotate-0">
-      {id === "crate" ? <StoreMock /> : <DashboardMock />}
+    <div className="relative aspect-[16/10] w-full max-w-xl -rotate-2 overflow-hidden rounded-[1.5rem] bg-coal shadow-[0_40px_80px_-30px_rgba(0,0,0,0.9)] ring-1 ring-white/10 transition-transform duration-700 ease-spring group-hover:scale-[1.03] group-hover:rotate-0 group-data-active:scale-[1.03] group-data-active:rotate-0">
+      <Image
+        src={project.image}
+        alt={`${project.name} screenshot`}
+        fill
+        sizes={sizes}
+        preload={preload}
+        className="object-cover object-top"
+      />
     </div>
   );
 }
@@ -36,7 +35,7 @@ export function Work() {
           <SectionHead
             title="Live products,"
             accent="not slide decks."
-            body="Products we designed, built and put in real users' hands, from finance dashboards to clinic booking apps."
+            body="Systems we designed, built and put in real users' hands, from store back offices to villa booking platforms."
           />
           <Reveal>
             <p className="font-mono text-[11px] tracking-[0.2em] text-fog uppercase">{total} selected products</p>
@@ -98,7 +97,7 @@ export function Work() {
                           </a>
                         )}
                         <Link
-                          href={`/work/${p.id}`}
+                          href={`/portfolio/${p.id}`}
                           className="inline-flex items-center gap-2 py-3 text-accent transition-opacity duration-300 ease-spring hover:opacity-70"
                         >
                           Case study <Arrow />
@@ -121,13 +120,26 @@ export function Work() {
                     className="absolute inset-0 [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [mask-image:radial-gradient(circle_at_60%_35%,black,transparent_75%)] [background-size:44px_44px]"
                   />
                   <Reveal variant="tilt" delay={0.1} className="relative flex w-full justify-center">
-                    <ProjectVisual id={p.id} />
+                    <ProjectVisual project={p} sizes="(min-width: 1024px) 36rem, 100vw" />
                   </Reveal>
                 </div>
               </div>
             </WorkCard>
           ))}
         </div>
+
+        <Reveal className="mt-14 flex flex-wrap items-center justify-center gap-3 md:mt-20">
+          <Button href="#contact">Start a project</Button>
+          <Link
+            href="/portfolio"
+            className="group inline-flex items-center gap-3 rounded-full bg-white/5 py-2 pr-2 pl-6 text-sm font-medium text-white ring-1 ring-white/10 transition-[transform,background-color] duration-500 ease-spring hover:bg-white/10 active:scale-[0.97]"
+          >
+            See all case studies
+            <span className="flex size-9 items-center justify-center rounded-full bg-white/10 transition-transform duration-500 ease-spring group-hover:translate-x-0.5 group-hover:-translate-y-px">
+              <Arrow />
+            </span>
+          </Link>
+        </Reveal>
       </div>
     </section>
   );
@@ -137,43 +149,8 @@ export function Work() {
 
 export function Process() {
   return (
-    <section id="process" className="lg:-scroll-mt-14 py-20 md:py-32 lg:py-40">
-      <div className={`${container} grid gap-12 md:gap-16 lg:grid-cols-[1fr_1.2fr] lg:gap-20`}>
-        <div className="lg:sticky lg:top-32 lg:self-start">
-          <SectionHead
-            title="Idea to launch."
-            accent="Six weeks flat."
-            body="No black box. You always know what is being built, what it costs and when you will see it."
-          />
-        </div>
-        <ol className="border-t border-white/10">
-          {process.map((p, i) => (
-            <Reveal
-              as="li"
-              key={p.step}
-              variant="right"
-              delay={i * 0.06}
-              className="group relative grid grid-cols-[auto_1fr] gap-x-5 border-b border-white/10 py-8 sm:gap-x-6 md:gap-x-10 md:py-12"
-            >
-              <Rise delay={0.15 + i * 0.06} className="font-serif text-5xl leading-none text-white/25 italic transition-colors duration-700 ease-spring group-hover:text-lime md:text-6xl">
-                {p.step}
-              </Rise>
-              <div>
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <h3 className="text-2xl font-medium tracking-[-0.02em] md:text-3xl">{p.title}</h3>
-                  <span className="font-mono text-[11px] tracking-[0.15em] text-fog uppercase">{p.when}</span>
-                </div>
-                <p className="mt-3 max-w-md leading-relaxed text-pretty text-fog">{p.body}</p>
-              </div>
-              {/* Lime rule sweeps across the bottom border on hover. */}
-              <span
-                aria-hidden
-                className="absolute inset-x-0 -bottom-px h-px origin-left scale-x-0 bg-lime transition-transform duration-1000 ease-spring group-hover:scale-x-100"
-              />
-            </Reveal>
-          ))}
-        </ol>
-      </div>
+    <section id="process" className="lg:-scroll-mt-14 py-20 md:py-32 lg:py-40 motion-safe:lg:py-0">
+      <ProcessTimeline />
     </section>
   );
 }
@@ -195,7 +172,7 @@ export function Pricing() {
         <SectionHead
           title="Real prices,"
           accent="right on the page."
-          body="Three ways to work with us. Once the scope is locked, so is the price."
+          body="No mystery. No magic. A flat fee for the scope, no hourly billing, no surprise invoices."
         />
 
         {/* Featured plan sits in the middle and stands taller on desktop; on tablets it spans the top row. */}
@@ -208,7 +185,7 @@ export function Pricing() {
                 variant={f ? "scale" : "tilt"}
                 delay={f ? 0.25 : i * 0.1}
                 className={
-                  f ? "md:order-first md:col-span-2 lg:order-2 lg:col-span-1 lg:-my-7" : i === 1 ? "lg:order-1" : "lg:order-3"
+                  f ? "md:order-first md:col-span-2 lg:order-2 lg:col-span-1 lg:-my-7" : i === 0 ? "lg:order-1" : "lg:order-3"
                 }
               >
                 <div
@@ -246,8 +223,8 @@ export function Pricing() {
                     </p>
 
                     <p className="mt-10 flex items-baseline gap-2">
-                      <span className={`text-sm ${f ? "text-ink/60" : "text-fog"}`}>{p.prefix}</span>
-                      <span className={`leading-none font-medium tracking-[-0.05em] ${f ? "text-7xl" : "text-6xl"}`}>{p.price}</span>
+                      {p.prefix && <span className={`text-sm ${f ? "text-ink/60" : "text-fog"}`}>{p.prefix}</span>}
+                      <span className={`leading-none font-medium tracking-[-0.05em] whitespace-nowrap ${f ? "text-6xl xl:text-7xl" : "text-5xl xl:text-6xl"}`}>{p.price}</span>
                       {p.suffix && <span className={`text-sm ${f ? "text-ink/60" : "text-fog"}`}>{p.suffix}</span>}
                     </p>
                     <p
@@ -271,8 +248,12 @@ export function Pricing() {
                       ))}
                     </ul>
 
-                    <Button href="#contact" variant={f ? "dark" : "ghost"} className="mt-10 justify-between">
-                      {f ? "Start my sprint" : `Talk about ${p.name}`}
+                    <Button
+                      href={p.book && site.bookingUrl ? site.bookingUrl : "#contact"}
+                      variant={f ? "dark" : "ghost"}
+                      className="mt-10 justify-between"
+                    >
+                      {p.cta}
                     </Button>
                   </div>
                 </div>
@@ -281,12 +262,12 @@ export function Pricing() {
           })}
         </div>
 
-        <div className="mt-14 md:mt-20">
-          <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-fog">
-            <li className="font-mono text-[11px] tracking-[0.2em] uppercase">Every plan includes</li>
+        <div className="mt-14 flex flex-col items-center gap-5 md:mt-20">
+          <p className="font-mono text-[11px] tracking-[0.2em] text-fog uppercase">Every plan includes</p>
+          <ul className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm text-zinc-300 md:flex md:items-center md:gap-x-10">
             {pricingIncludes.map((x, i) => (
-              <Reveal as="li" variant="pop" delay={0.1 + i * 0.06} key={x} className="flex items-center gap-2 text-zinc-300">
-                <span className="size-1.5 rounded-full bg-lime" />
+              <Reveal as="li" variant="pop" delay={0.1 + i * 0.06} key={x} className="flex items-center gap-2">
+                <span className="size-1.5 shrink-0 rounded-full bg-lime" />
                 {x}
               </Reveal>
             ))}
@@ -320,10 +301,12 @@ export function Contact() {
               ballpark quote.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <Button href={`mailto:${site.email}?subject=${encodeURIComponent("New project")}`}>{site.email}</Button>
+              {site.email && (
+                <Button href={`mailto:${site.email}?subject=${encodeURIComponent("New project")}`}>{site.email}</Button>
+              )}
               {site.bookingUrl && (
-                <Button href={site.bookingUrl} variant="ghost">
-                  Book a 20-min call
+                <Button href={site.bookingUrl} variant={site.email ? "ghost" : undefined}>
+                  Book a call
                 </Button>
               )}
             </div>
@@ -334,28 +317,48 @@ export function Contact() {
   );
 }
 
+/** Icon per social label in `site.socials`; unknown labels fall back to a globe. */
+const socialIcons: Record<string, Icon> = {
+  X: XLogoIcon,
+  LinkedIn: LinkedinLogoIcon,
+  Instagram: InstagramLogoIcon,
+};
+
 export function Footer() {
   return (
     <Reveal>
       <footer className={`${container} flex flex-col gap-6 border-t border-white/10 py-10 text-sm text-fog lg:flex-row lg:items-center lg:justify-between`}>
-        <p className="flex items-center gap-2 text-white">
-          <span className="size-2 rounded-full bg-lime" />
-          {site.name}
-          <span className="text-fog">· {site.tagline}</span>
+        <p className="flex items-center gap-3 text-white">
+          <Image src="/brand/logo.png" alt={site.name} width={1191} height={215} className="h-5 w-auto" />
         </p>
-        <ul className="flex flex-wrap gap-x-6 gap-y-1 [&_a]:inline-block [&_a]:py-2">
-          {site.socials.map((s) => (
-            <li key={s.href}>
-              <a href={s.href} target="_blank" rel="noreferrer" className="transition-colors duration-300 ease-spring hover:text-white">
-                {s.label}
+        <ul className="flex flex-wrap items-center gap-x-6 gap-y-1 [&_a]:inline-block [&_a]:py-2">
+          {site.socials.length > 0 && (
+            <li className="flex items-center gap-2">
+              {site.socials.map((s) => {
+                const SocialIcon = socialIcons[s.label] ?? GlobeIcon;
+                return (
+                  <a
+                    key={s.href}
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={s.label}
+                    title={s.label}
+                    className="!flex size-10 items-center justify-center rounded-full bg-white/5 text-fog ring-1 ring-white/10 transition-[color,background-color,transform] duration-300 ease-spring !py-0 hover:-translate-y-0.5 hover:bg-white/10 hover:text-lime active:scale-95"
+                  >
+                    <SocialIcon weight="fill" className="size-[18px]" aria-hidden />
+                  </a>
+                );
+              })}
+            </li>
+          )}
+          {site.email && (
+            <li>
+              <a href={`mailto:${site.email}`} className="transition-colors duration-300 ease-spring hover:text-white">
+                {site.email}
               </a>
             </li>
-          ))}
-          <li>
-            <a href={`mailto:${site.email}`} className="transition-colors duration-300 ease-spring hover:text-white">
-              {site.email}
-            </a>
-          </li>
+          )}
           {[
             { label: "Privacy", href: "/privacy" },
             { label: "Terms", href: "/terms" },

@@ -1,4 +1,4 @@
-import { container, site } from "@/lib/site";
+import { container, hero, site } from "@/lib/site";
 import { HeroBackdrop } from "./HeroBackdrop";
 import { HeroCursors } from "./HeroCursors";
 import { HeroBadge } from "./HeroBadge";
@@ -27,15 +27,18 @@ export function Hero() {
           <div className="mt-8 flex flex-col gap-8 sm:mt-10 lg:flex-row lg:items-end lg:justify-between">
             {/* CSS entrance (globals.css), not <Reveal>, so it doesn't wait for hydration. */}
             <div className="hero-up max-w-md" style={{ animationDelay: "0.45s" }}>
-              <p className="text-base leading-relaxed text-pretty text-fog sm:text-lg">
-                You bring the idea. {site.name} brings the senior team that designs, builds and launches it. One fixed
-                price, a live demo every Friday, and every line of code is yours.
+              <p className="text-xl leading-snug font-medium tracking-[-0.02em] text-pretty text-zinc-200 sm:text-2xl">
+                {hero.sub}
               </p>
             </div>
             <div className="hero-up flex flex-wrap items-center gap-3" style={{ animationDelay: "0.55s" }}>
-              <Button href="#contact">Start building</Button>
-              <Button href="#estimate" variant="ghost">
-                Price my build
+              {site.bookingUrl ? (
+                <Button href={site.bookingUrl}>Book a call</Button>
+              ) : (
+                <Button href="#contact">Start building</Button>
+              )}
+              <Button href="#work" variant="ghost">
+                See our work
               </Button>
             </div>
           </div>

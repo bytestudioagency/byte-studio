@@ -34,7 +34,7 @@ export function Services() {
         <SectionHead
           title="Four crafts."
           accent="Zero compromises."
-          body="We don't do everything. We do four things at full depth, with senior engineers on every project from first sketch to launch."
+          body="Four disciplines, one team - so nothing gets lost between design, code, and launch."
         />
 
         <div className="mt-16 md:mt-20">
@@ -89,7 +89,14 @@ export function Services() {
                         <span className="hidden lg:block" />
                         {/* Tablet: copy and bullet list sit side by side above the code window. */}
                         <div className="flex min-w-0 flex-col justify-between gap-8 md:max-lg:grid md:max-lg:grid-cols-2 md:max-lg:items-start md:max-lg:gap-10 lg:pr-10">
-                          <p className="max-w-md text-lg leading-relaxed text-pretty text-fog">{s.body}</p>
+                          <div>
+                            <p className="max-w-md text-lg leading-relaxed text-pretty text-fog">{s.body}</p>
+                            {s.deliveredFor && (
+                              <p className="mt-5 font-mono text-[11px] tracking-[0.2em] text-fog uppercase">
+                                Delivered for <span className="text-lime">{s.deliveredFor}</span>
+                              </p>
+                            )}
+                          </div>
                           <ul className="border-t border-white/10">
                             {s.points.map((p, j) => (
                               <li

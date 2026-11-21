@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Estimator } from "@/components/Estimator";
 import { JsonLd, homeJsonLd } from "@/components/JsonLd";
 import { Faq } from "@/components/Faq";
 import { Hero } from "@/components/Hero";
 import { Marquee } from "@/components/Marquee";
 import { Nav } from "@/components/Nav";
 import { Services } from "@/components/Services";
+import { WhyPoints } from "@/components/WhyPoints";
 import { WhyUs } from "@/components/WhyUs";
 import { Contact, Footer, Pricing, Process, Work } from "@/components/Sections";
 
@@ -21,12 +21,12 @@ export default function Home() {
       <main>
         <Hero />
         <Work />
-        <WhyUs />
+        <WhyPoints />
         <Services />
         <Marquee />
         <Process />
+        <WhyUs />
         <Pricing />
-        <Estimator />
         <Faq />
         <Contact />
       </main>

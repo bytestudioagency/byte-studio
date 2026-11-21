@@ -4,10 +4,15 @@
 import { site } from "./site";
 
 export const legal = {
-  entity: "Hendzen", // TODO: your registered business name, e.g. "Hendzen Technologies LLP"
+  entity: "Byte Studio", // TODO: your registered business name, if it differs from the brand
   courts: "India", // TODO: the city whose courts handle disputes, e.g. "Bengaluru, India"
-  updated: "17 November 2026", // change this whenever the text below changes
+  updated: "21 November 2026", // change this whenever the text below changes
 };
+
+/** How to reach us: the email if one is set, otherwise the social profiles. */
+const reach = site.email
+  ? `email ${site.email}`
+  : `message us on ${site.socials.map((s) => `${s.label} (${s.href})`).join(" or ")}`;
 
 /** A block is a paragraph (string) or a bullet list (string[]). */
 export type LegalDoc = {
@@ -27,7 +32,7 @@ export const privacy: LegalDoc = {
     {
       heading: "What this website collects",
       body: [
-        "This site has no sign-up, no contact form, no advertising trackers and no analytics cookies. The price estimator runs entirely in your browser, and nothing you select is sent to us unless you choose to email it.",
+        "This site has no sign-up, no contact form, no advertising trackers and no analytics cookies.",
         "Like every website, ours is served by a hosting provider that keeps short-lived technical logs (IP address, browser type, pages requested, time) to keep the service secure and running.",
       ],
     },
@@ -61,7 +66,7 @@ export const privacy: LegalDoc = {
     {
       heading: "Your choices",
       body: [
-        `You can ask us for a copy of the personal information we hold about you, ask us to correct it, or ask us to delete it. Write to ${site.email} and we will respond within 30 days.`,
+        `You can ask us for a copy of the personal information we hold about you, ask us to correct it, or ask us to delete it. To do this, ${reach}. We will respond within 30 days.`,
       ],
     },
     {
@@ -82,27 +87,26 @@ export const terms: LegalDoc = {
     {
       heading: "Using this website",
       body: [
-        "The content on this site is general information about our services. Prices shown on the site, including the price estimator, are indicative ranges and not an offer. A price is binding only once it is in a written quote that both of us have accepted.",
+        "The content on this site is general information about our services. Prices shown on the site are indicative ranges and not an offer. A price is binding only once it is in a written quote that both of us have accepted.",
       ],
     },
     {
       heading: "Quotes and scope",
       body: [
-        "Before work starts you receive a written scope and a fixed quote. The quote does not change unless the scope does. If you ask for something outside the agreed scope, we quote it separately and build it only once you approve.",
+        "Before work starts you receive a written scope and a flat project fee. The quote does not change unless the scope does. If you ask for something outside the agreed scope, we quote it separately and build it only once you approve.",
         "Timelines assume timely feedback, content and account access from you. If we are kept waiting, the launch date moves by the same amount.",
       ],
     },
     {
       heading: "Payment",
       body: [
-        "Projects are billed per milestone, as set out in your quote. Invoices are due within 7 days. Third-party costs such as hosting, domains, app store fees and paid services are billed to you directly by those providers and are not part of our fee.",
-        "Retainers are billed monthly in advance. You can cancel at any time, and the cancellation takes effect at the end of the month already paid for.",
+        "Payment terms are set out in the scope and payment agreement we both sign before work begins. We accept UPI or bank transfer, and invoices are due within 7 days. Third-party costs such as hosting, domains, app store fees and paid services are billed to you directly by those providers and are not part of our fee.",
       ],
     },
     {
       heading: "Ownership",
       body: [
-        "Work is committed to a repository in your name from the first day. Ownership of the code and designs for each milestone passes to you when that milestone is paid. If a project ends early, you keep everything you have paid for.",
+        "Work is committed to a repository in your name from the first day. Ownership of the code and designs passes to you as the agreed payments are made. If a project ends early, you keep everything you have paid for.",
         "Open-source libraries and third-party services used in your product stay under their own licences. We may reuse general know-how and non-specific utility code in other projects, but never your confidential information or anything that identifies your product.",
         "We may show the finished work in our portfolio unless you ask us not to.",
       ],
@@ -110,7 +114,7 @@ export const terms: LegalDoc = {
     {
       heading: "After launch",
       body: [
-        "Every project includes 30 days of fixes after launch. This covers defects in what we built against the agreed scope. It does not cover new features, changes of mind, or problems caused by third-party services or by changes made by others.",
+        "Every project includes 15 days of support after launch to fix bugs and handle small tweaks. This covers defects in what we built against the agreed scope. It does not cover new features, changes of mind, or problems caused by third-party services or by changes made by others.",
       ],
     },
     {
@@ -129,7 +133,7 @@ export const terms: LegalDoc = {
       heading: "Governing law",
       body: [
         `These terms are governed by the laws of India, and disputes are subject to the courts of ${legal.courts}.`,
-        `Questions about these terms can be sent to ${site.email}.`,
+        `If you have questions about these terms, ${reach}.`,
       ],
     },
   ],

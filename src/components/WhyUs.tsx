@@ -1,6 +1,6 @@
 import { CheckIcon, XIcon } from "@phosphor-icons/react/dist/ssr";
 import { container, site, whyUs } from "@/lib/site";
-import { Reveal, SectionHead, Shell } from "./ui";
+import { Button, Reveal, SectionHead, Shell } from "./ui";
 
 function Cross() {
   return (
@@ -25,7 +25,7 @@ const usCol = "lg:border-l lg:border-lime/20 lg:bg-lime/[0.05]";
 
 export function WhyUs() {
   return (
-    <section id="why" className="lg:-scroll-mt-14 py-20 md:py-32 lg:py-40">
+    <section id="compare" className="lg:-scroll-mt-14 py-20 md:py-32 lg:py-40">
       <div className={container}>
         <SectionHead
           title="The agency model,"
@@ -81,6 +81,10 @@ export function WhyUs() {
               ))}
             </ul>
           </Shell>
+        </Reveal>
+
+        <Reveal delay={0.1} className="mt-10 flex flex-wrap items-center justify-center gap-3 md:mt-14">
+          <Button href={site.bookingUrl || "#contact"}>Book a Call</Button>
         </Reveal>
       </div>
     </section>

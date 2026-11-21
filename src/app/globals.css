@@ -65,6 +65,21 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+/* Tailwind v4 dropped the pointer cursor on buttons; restore it site-wide. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  label[for],
+  select,
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="submit"],
+  input[type="button"] {
+    cursor: pointer;
+  }
+}
+
 ::selection {
   background: var(--color-lime);
   color: var(--color-ink);
