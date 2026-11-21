@@ -24,9 +24,9 @@ export function homeJsonLd(): Data {
         "@id": orgId,
         name: site.name,
         url: site.url,
-        logo: `${site.url}/icon.svg`,
-        image: `${site.url}/opengraph-image.png`,
-        email: site.email,
+        logo: `${site.url}/icon.png`,
+        image: `${site.url}/opengraph-image.jpg`,
+        ...(site.email && { email: site.email }),
         description: seo.description,
         areaServed: { "@type": "Country", name: "India" },
         ...(site.city && { address: { "@type": "PostalAddress", addressLocality: site.city, addressCountry: "IN" } }),
@@ -54,14 +54,15 @@ export function homeJsonLd(): Data {
   };
 }
 
-/** Home > project, for a case study page. */
+/** Home > Portfolio > project, for a case study page. */
 export function breadcrumbJsonLd(name: string, path: string): Data {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: site.name, item: site.url },
-      { "@type": "ListItem", position: 2, name, item: `${site.url}${path}` },
+      { "@type": "ListItem", position: 2, name: "Portfolio", item: `${site.url}/portfolio` },
+      { "@type": "ListItem", position: 3, name, item: `${site.url}${path}` },
     ],
   };
 }

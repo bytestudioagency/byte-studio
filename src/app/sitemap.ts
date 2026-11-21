@@ -7,8 +7,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const legalUpdated = new Date(`${legal.updated} UTC`); // "17 November 2026", read as UTC so the day doesn't shift
   return [
     { url: site.url, lastModified: updated, changeFrequency: "monthly", priority: 1 },
+    { url: `${site.url}/portfolio`, lastModified: updated, changeFrequency: "monthly", priority: 0.8 },
     ...projects.map((p) => ({
-      url: `${site.url}/work/${p.id}`,
+      url: `${site.url}/portfolio/${p.id}`,
       lastModified: updated,
       changeFrequency: "yearly" as const,
       priority: 0.7,

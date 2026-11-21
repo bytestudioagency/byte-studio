@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ViewTransition, type CSSProperties } from "react";
@@ -12,7 +13,7 @@ export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.id }));
 }
 
-export async function generateMetadata({ params }: PageProps<"/work/[slug]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/portfolio/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const project = projects.find((p) => p.id === slug);
   if (!project) return {};
@@ -20,14 +21,14 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
   return {
     title,
     description: project.summary,
-    alternates: { canonical: `/work/${project.id}` },
+    alternates: { canonical: `/portfolio/${project.id}` },
     openGraph: { title, description: project.summary, type: "article" },
   };
 }
 
 const label = "font-mono text-[11px] tracking-[0.2em] text-fog uppercase";
 
-export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
+export default async function CaseStudy({ params }: PageProps<"/portfolio/[slug]">) {
   const { slug } = await params;
   const index = projects.findIndex((p) => p.id === slug);
   if (index === -1) notFound();
@@ -37,20 +38,19 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
   const facts = [
     { k: "Industry", v: project.industry },
     { k: "Product", v: project.kind },
-    { k: "Timeline", v: project.timeline },
     { k: "Stack", v: project.tags.join(", ") },
   ];
 
   return (
     <>
-      <JsonLd data={breadcrumbJsonLd(project.name, `/work/${project.id}`)} />
+      <JsonLd data={breadcrumbJsonLd(project.name, `/portfolio/${project.id}`)} />
       <Nav home={false} />
       <main style={{ "--accent": project.accent } as CSSProperties}>
         <article>
           <header className={`${container} pt-36 md:pt-48`}>
             <Reveal>
               <Link
-                href="/#work"
+                href="/portfolio"
                 className={`${label} group inline-flex items-center gap-2 transition-colors duration-300 ease-spring hover:text-white`}
               >
                 <Arrow className="-rotate-[135deg] transition-transform duration-500 ease-spring group-hover:-translate-x-0.5 group-hover:translate-y-0.5" />{" "}
@@ -87,13 +87,13 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
                   aria-hidden
                   className="absolute inset-0 [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [mask-image:radial-gradient(circle_at_50%_40%,black,transparent_75%)] [background-size:44px_44px]"
                 />
-                <div className="relative flex w-full justify-center md:scale-125">
-                  <ProjectVisual id={project.id} />
+                <div className="relative flex w-full justify-center [&>div]:max-w-4xl">
+                  <ProjectVisual project={project} sizes="(min-width: 1280px) 56rem, 100vw" preload />
                 </div>
               </div>
             </Reveal>
 
-            <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 border-b border-white/10 pb-10 md:grid-cols-4">
+            <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 border-b border-white/10 pb-10 md:grid-cols-3">
               {facts.map((f, i) => (
                 <Reveal key={f.k} delay={i * 0.06}>
                   <dt className={label}>{f.k}</dt>
@@ -106,7 +106,7 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
           <div className={`${container} py-8 md:py-16`}>
             {[
               { n: "01", title: "The problem", text: project.challenge },
-              { n: "02", title: "What we built", text: project.solution, list: project.highlights },
+              { n: "02", title: "What we built", text: project.solution, groups: project.features },
             ].map((s) => (
               <Reveal key={s.n}>
                 <section className="grid gap-x-20 gap-y-6 border-b border-white/10 py-12 md:grid-cols-[1fr_1.4fr] md:py-20">
@@ -116,16 +116,19 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
                   </h2>
                   <div>
                     <p className="max-w-xl text-lg leading-relaxed text-pretty text-fog">{s.text}</p>
-                    {s.list && (
-                      <ul className="mt-8 max-w-xl border-t border-white/10">
-                        {s.list.map((h) => (
-                          <li key={h} className="flex items-center gap-3 border-b border-white/10 py-3 text-sm text-zinc-200">
-                            <span className="size-1.5 shrink-0 rounded-full bg-accent" />
-                            {h}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    {s.groups?.map((g) => (
+                      <div key={g.group ?? "features"} className="mt-8 max-w-xl">
+                        {g.group && <h3 className={`${label} mb-3`}>{g.group}</h3>}
+                        <ul className="border-t border-white/10">
+                          {g.items.map((h) => (
+                            <li key={h} className="flex gap-3 border-b border-white/10 py-3 text-sm leading-relaxed text-zinc-200">
+                              <span className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-accent" />
+                              {h}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
                 </section>
               </Reveal>
@@ -137,6 +140,7 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
                   <span className="font-serif text-2xl font-normal text-accent italic md:text-3xl">03</span>
                   The outcome
                 </h2>
+                <p className="mt-8 max-w-2xl text-lg leading-relaxed text-pretty text-fog">{project.outcome}</p>
                 <dl className="mt-10 grid gap-4 md:grid-cols-3">
                   {project.results.map((r, i) => (
                     <Reveal
@@ -149,14 +153,35 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
                     </Reveal>
                   ))}
                 </dl>
+                <p className="mt-10 max-w-2xl border-l-2 border-accent pl-5 font-serif text-2xl leading-snug text-pretty text-zinc-200 italic md:text-3xl">
+                  {project.note}
+                </p>
               </section>
             </Reveal>
+
+            {project.gallery.length > 0 && (
+              <section aria-label={`${project.name} screenshots`} className="grid gap-4 border-t border-white/10 pt-12 md:grid-cols-2 md:gap-6 md:pt-20">
+                {project.gallery.map((src, i) => (
+                  <Reveal key={src} delay={(i % 2) * 0.08} className={project.gallery.length % 2 && i === 0 ? "md:col-span-2" : ""}>
+                    <div className="relative aspect-[16/10] overflow-hidden rounded-[1.5rem] bg-coal ring-1 ring-white/10">
+                      <Image
+                        src={src}
+                        alt={`${project.name} screenshot ${i + 2}`}
+                        fill
+                        sizes="(min-width: 768px) 40rem, 100vw"
+                        className="object-cover object-top"
+                      />
+                    </div>
+                  </Reveal>
+                ))}
+              </section>
+            )}
           </div>
         </article>
 
         <div className={container}>
           <Link
-            href={`/work/${next.id}`}
+            href={`/portfolio/${next.id}`}
             style={{ "--accent": next.accent } as CSSProperties}
             className="group flex items-end justify-between gap-6 border-y border-white/10 py-10 md:py-14"
           >
