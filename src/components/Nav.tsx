@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState, ViewTransition } from "react";
 import { nav, site } from "@/lib/site";
 import { Arrow } from "./ui";
@@ -9,6 +10,7 @@ export function Nav({ home = true }: { home?: boolean }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const base = home ? "" : "/";
+  const active = useActiveSection(home);
 
   // Firm up the pill once the page moves, so it reads clearly over busy sections.
   useEffect(() => {
@@ -52,23 +54,28 @@ export function Nav({ home = true }: { home?: boolean }) {
             <a
               href={home ? "#top" : "/"}
               onClick={close}
-              className="flex items-center gap-2 py-2 text-[15px] font-medium tracking-tight"
+              className="flex items-center py-2"
             >
-              <span className="relative flex size-2">
-                <span className="absolute inset-0 animate-ping rounded-full bg-lime/60 [animation-duration:2.4s]" />
-                <span className="relative size-2 rounded-full bg-lime" />
-              </span>
-              {site.name}
+              <Image src="/brand/logo.png" alt={site.name} width={1191} height={215} preload className="h-5 w-auto sm:h-[22px]" />
             </a>
 
             <ul className="hidden items-center gap-6 text-sm whitespace-nowrap text-fog lg:flex">
-              {nav.map((item) => (
-                <li key={item.href}>
-                  <a href={base + item.href} className="transition-colors duration-300 ease-spring hover:text-white">
-                    {item.label}
-                  </a>
-                </li>
-              ))}
+              {nav.map((item) => {
+                const current = active === item.href;
+                return (
+                  <li key={item.href}>
+                    <a
+                      href={base + item.href}
+                      aria-current={current ? "location" : undefined}
+                      className={`transition-colors duration-300 ease-spring hover:text-white ${
+                        current ? "text-white" : ""
+                      }`}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
 
             <div className="flex items-center gap-1.5 sm:gap-2">
@@ -135,6 +142,7 @@ export function Nav({ home = true }: { home?: boolean }) {
               <a
                 href={base + item.href}
                 onClick={close}
+                aria-current={active === item.href ? "location" : undefined}
                 style={{ transitionDelay: open ? `${60 + i * 40}ms` : "0ms" }}
                 className={`group flex items-center gap-4 py-3.5 transition-[transform,opacity] duration-700 ease-spring sm:py-4 [@media(max-height:700px)]:py-2.5 ${
                   open ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
@@ -168,9 +176,11 @@ export function Nav({ home = true }: { home?: boolean }) {
             </span>
           </a>
           <div className="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-sm">
-            <a href={`mailto:${site.email}`} className="py-2 text-zinc-300">
-              {site.email}
-            </a>
+            {site.email && (
+              <a href={`mailto:${site.email}`} className="py-2 text-zinc-300">
+                {site.email}
+              </a>
+            )}
             <p className="flex items-center gap-2 font-mono text-[10px] tracking-[0.15em] text-fog uppercase">
               <span className="size-1.5 rounded-full bg-lime" />
               Reply within a day
@@ -180,4 +190,41 @@ export function Nav({ home = true }: { home?: boolean }) {
       </div>
     </>
   );
+}
+
+/**
+ * The nav link (`#work`, `#faq`...) for the section currently under the top third of the screen, or null in the hero,
+ * the contact block and on sub-pages. Contact is tracked so the FAQ link lets go once you scroll past it.
+ */
+function useActiveSection(home: boolean) {
+  const [active, setActive] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!home) return;
+    const ids = [...nav.map((n) => n.href.slice(1)), "contact"];
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.35;
+      let best: { id: string; top: number } | null = null;
+      for (const id of ids) {
+        const top = document.getElementById(id)?.getBoundingClientRect().top;
+        if (top !== undefined && top <= line && (!best || top > best.top)) best = { id, top };
+      }
+      setActive(best && best.id !== "contact" ? `#${best.id}` : null);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [home]);
+
+  return active;
 }
