@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "Portfolio",
   description,
   alternates: { canonical: "/portfolio" },
-  openGraph: { title: `Portfolio — ${site.name}`, description, type: "website" },
+  openGraph: { title: `${site.name} | Portfolio`, description, type: "website" },
 };
 
 const collectionJsonLd = {

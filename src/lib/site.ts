@@ -18,7 +18,7 @@ export const site = {
 
 // Search-engine copy for the home page.
 export const seo = {
-  title: "A Website That Works With Your Business | Byte Studio",
+  title: "Byte Studio | A Website That Works With Your Business",
   description: "A website that works with your business, not just sits in a browser tab.",
 };
 
@@ -142,20 +142,19 @@ export const services = [
     ],
   },
   {
-    id: "seo",
-    title: "SEO",
-    body: "We help your site show up higher on Google and reach more of the right people, so you get more visitors and more customers without paying for ads.",
-    deliveredFor: "Keanas Clinic",
-    points: ["Technical SEO and site speed", "Structured data for rich results", "Ad and conversion tracking"],
-    file: "app/layout.tsx",
+    id: "mvp",
+    title: "MVP development",
+    body: "Turn your idea into a working product real users can sign up for, so you can test the market and pitch investors with something that runs, not slides.",
+    deliveredFor: "",
+    points: ["Scoped to the features that matter", "Sign-up, payments and admin built in", "Code that grows past version one"],
+    file: "app/onboarding/page.tsx",
     code: [
-      "export const metadata: Metadata = {",
-      "  title: \"Skin treatments in your city\",",
-      "  description: \"40+ treatments, certified doctors.\",",
-      "  openGraph: { images: [\"/og.png\"] },",
-      "};",
+      "export default async function Onboarding() {",
+      "  const user = await requireUser();",
+      "  return <Checkout plan={user.plan} />;",
+      "}",
       "",
-      "// fast pages rank, slow pages don't",
+      "// ship the core, learn, then build the rest",
     ],
   },
 ];

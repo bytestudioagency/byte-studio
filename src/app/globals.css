@@ -57,6 +57,10 @@
 html {
   background: var(--color-ink);
   scroll-behavior: smooth;
+  /* Side-sliding reveals (x: ±48px) and the tilted marquee poke past the edge before they settle.
+     Clip on the root, not just <body>: mobile Chrome doesn't reliably carry body's clip up to the
+     viewport, which let the page pan sideways until those elements had revealed. */
+  overflow-x: clip;
 }
 
 body {

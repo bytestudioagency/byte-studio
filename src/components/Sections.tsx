@@ -51,8 +51,9 @@ export function Work() {
               style={{ "--accent": p.accent } as CSSProperties}
               className="group overflow-hidden rounded-[2rem] bg-coal shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_-30px_60px_-30px_rgba(0,0,0,0.9)] ring-1 ring-white/10"
             >
-              <div className="grid lg:min-h-[35rem] lg:grid-cols-2">
-                <div className={`flex flex-col justify-between gap-10 p-6 sm:p-9 md:gap-12 md:p-12 lg:p-10 xl:p-12 ${i % 2 ? "lg:order-2" : ""}`}>
+              {/* minmax(0,1fr) tracks + min-w-0: the w-max title must not widen the column past the card on mobile. */}
+              <div className="grid grid-cols-1 lg:min-h-[35rem] lg:grid-cols-2">
+                <div className={`flex min-w-0 flex-col justify-between gap-10 p-6 sm:p-9 md:gap-12 md:p-12 lg:p-10 xl:p-12 ${i % 2 ? "lg:order-2" : ""}`}>
                   <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
                     <p className="font-serif text-4xl leading-none text-accent italic">
                       {String(i + 1).padStart(2, "0")}
