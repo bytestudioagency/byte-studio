@@ -225,7 +225,7 @@ export function Pricing() {
 
                     <p className="mt-10 flex items-baseline gap-2">
                       {p.prefix && <span className={`text-sm ${f ? "text-ink/60" : "text-fog"}`}>{p.prefix}</span>}
-                      <span className={`leading-none font-medium tracking-[-0.05em] whitespace-nowrap ${f ? "text-6xl xl:text-7xl" : "text-5xl xl:text-6xl"}`}>{p.price}</span>
+                      <span className={`leading-none font-medium tracking-[-0.05em] whitespace-nowrap ${f ? "text-5xl sm:text-6xl xl:text-7xl" : "text-5xl xl:text-6xl"}`}>{p.price}</span>
                       {p.suffix && <span className={`text-sm ${f ? "text-ink/60" : "text-fog"}`}>{p.suffix}</span>}
                     </p>
                     <p
