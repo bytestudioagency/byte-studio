@@ -132,7 +132,7 @@ function MobileStage() {
   const { ref, play } = usePlay();
   const D = 6;
   return (
-    <div ref={ref} className="absolute inset-0 flex items-end justify-center overflow-hidden pt-8">
+    <div ref={ref} className="absolute inset-0 flex items-start justify-center overflow-hidden pt-8 sm:items-end">
       {/* Halo behind the phone */}
       <div className="absolute bottom-0 left-1/2 size-72 -translate-x-1/2 translate-y-1/3 rounded-full bg-lime/20 blur-[80px]" aria-hidden />
 
@@ -159,7 +159,7 @@ function MobileStage() {
       <m.div
         animate={play ? { y: [0, -8, 0] } : { y: 0 }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="relative aspect-[1/2.05] h-[min(38rem,calc(100%+1rem))] translate-y-10 rounded-[2.75rem] bg-[#151517] p-2 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.9),inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+        className="relative aspect-[1/2.05] w-[72%] max-w-[19rem] sm:h-[min(38rem,calc(100%+1rem))] sm:w-auto sm:max-w-none sm:translate-y-10 rounded-[2.75rem] bg-[#151517] p-2 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.9),inset_0_0_0_1px_rgba(255,255,255,0.12)]"
       >
         <div className="relative h-full overflow-hidden rounded-[2.25rem] bg-[#09090a]">
           {/* Dynamic island */}
