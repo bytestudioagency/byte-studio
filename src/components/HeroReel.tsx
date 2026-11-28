@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { PauseIcon, PlayIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
+import { CornersOutIcon, PauseIcon, PlayIcon, SpeakerHighIcon, SpeakerSlashIcon } from "@phosphor-icons/react";
+
+// iOS Safari only lets a <video> go full screen through its own prefixed API.
+type IOSVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
 
 /**
  * Showreel under the hero copy. Plays muted and looped while on screen (paused off screen),
@@ -30,8 +33,37 @@ export function HeroReel() {
       { threshold: 0.25 },
     );
     io.observe(video);
-    return () => io.disconnect();
+
+    // Native controls only while full screen, so viewers can scrub and change volume there.
+    const onFullscreen = () => {
+      video.controls = document.fullscreenElement === video;
+      setMuted(video.muted);
+    };
+    const onIOSEnd = () => {
+      video.controls = false;
+      setMuted(video.muted);
+    };
+    document.addEventListener("fullscreenchange", onFullscreen);
+    video.addEventListener("webkitendfullscreen", onIOSEnd);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("fullscreenchange", onFullscreen);
+      video.removeEventListener("webkitendfullscreen", onIOSEnd);
+    };
   }, []);
+
+  const openFullscreen = () => {
+    const video = ref.current as IOSVideo | null;
+    if (!video) return;
+    userPaused.current = false;
+    video.play().catch(() => {});
+    if (video.requestFullscreen) {
+      video.requestFullscreen().catch(() => {});
+    } else {
+      video.controls = true;
+      video.webkitEnterFullscreen?.();
+    }
+  };
 
   const togglePlay = () => {
     const video = ref.current;
@@ -91,6 +123,9 @@ export function HeroReel() {
               </button>
               <button type="button" onClick={toggleSound} className={btn} aria-label={muted ? "Unmute showreel" : "Mute showreel"}>
                 {muted ? <SpeakerSlashIcon weight="fill" className="size-4" /> : <SpeakerHighIcon weight="fill" className="size-4" />}
+              </button>
+              <button type="button" onClick={openFullscreen} className={btn} aria-label="Watch showreel full screen" title="Full screen">
+                <CornersOutIcon weight="bold" className="size-4" />
               </button>
             </span>
           </div>
