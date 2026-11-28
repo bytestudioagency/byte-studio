@@ -6,6 +6,7 @@
 // cuts the page out of that frame, and re-composes it on a lit gradient backdrop with a glass browser
 // window, layered shadows and a soft sheen. Writes public/portfolio/<project>/<n>.webp (16:10).
 // The .png sources are left untouched, so the script can be re-run after tweaking the look.
+// Portrait .jpeg/.jpg phone screenshots are framed in a phone instead of a browser window.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -120,8 +121,8 @@ function titleBar(w, label) {
 }
 
 // A frosted glass slab the window sits in, with a bright rim along the top.
-function glassPlate(w, h, pad) {
-  const pw = w + pad * 2, ph = h + pad * 2, r = R + pad * 0.8;
+function glassPlate(w, h, pad, radius = R) {
+  const pw = w + pad * 2, ph = h + pad * 2, r = radius + pad * 0.8;
   return svg(pw, ph, `
     <defs>
       <linearGradient id="fill" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".5" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#fff" stop-opacity=".12"/></linearGradient>
@@ -144,9 +145,9 @@ function windowOverlay(w, h) {
     <rect x=".75" y=".75" width="${w - 1.5}" height="${h - 1.5}" rx="${R - 0.75}" fill="none" stroke="url(#edge)" stroke-width="1.5"/>`);
 }
 
-async function shadow(w, h, x, y, { blur, dy, opacity, color = "#000", spread = 0 }) {
+async function shadow(w, h, x, y, { blur, dy, opacity, color = "#000", spread = 0, radius = R }) {
   // Drawn on a full-size canvas so the blurred edge can run off the frame.
-  const s = await sharp(svg(W, H, `<rect x="${x - spread}" y="${y + dy - spread}" width="${w + spread * 2}" height="${h + spread * 2}" rx="${Math.max(0, R + spread)}" fill="${color}" fill-opacity="${opacity}"/>`))
+  const s = await sharp(svg(W, H, `<rect x="${x - spread}" y="${y + dy - spread}" width="${w + spread * 2}" height="${h + spread * 2}" rx="${Math.max(0, radius + spread)}" fill="${color}" fill-opacity="${opacity}"/>`))
     .blur(blur)
     .png()
     .toBuffer();
@@ -221,13 +222,78 @@ async function build(file, { accent, label }, noise) {
   return sharp(backdrop(accent)).composite(layers).webp({ quality: 86, effort: 6 });
 }
 
+/* ----------------------------------- phone ----------------------------------- */
+
+const PHONE_H = 1330; // outer height of the phone body
+const BEZEL = 20;
+const PHONE_R = 92;
+
+function phoneBody(w, h) {
+  return svg(w, h, `
+    <defs>
+      <linearGradient id="body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a3a40"/><stop offset=".5" stop-color="#141416"/><stop offset="1" stop-color="#2a2a2f"/></linearGradient>
+      <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".2" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity=".2"/></linearGradient>
+    </defs>
+    <rect width="${w}" height="${h}" rx="${PHONE_R}" fill="url(#body)"/>
+    <rect x="1.5" y="1.5" width="${w - 3}" height="${h - 3}" rx="${PHONE_R - 1.5}" fill="none" stroke="url(#rim)" stroke-width="3"/>`);
+}
+
+function screenOverlay(w, h, r) {
+  return svg(w, h, `
+    <defs>
+      <linearGradient id="glare" x1="0" y1="0" x2="1" y2=".7"><stop offset=".3" stop-color="#fff" stop-opacity="0"/><stop offset=".38" stop-color="#fff" stop-opacity=".1"/><stop offset=".5" stop-color="#fff" stop-opacity=".04"/><stop offset=".56" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    </defs>
+    <rect width="${w}" height="${h}" rx="${r}" fill="url(#glare)"/>`);
+}
+
+async function buildPhone(file, { accent }, noise) {
+  const meta = await sharp(file).metadata();
+  const screenH = PHONE_H - BEZEL * 2;
+  const screenW = Math.round((meta.width * screenH) / meta.height);
+  const bodyW = screenW + BEZEL * 2;
+  const x = Math.round((W - bodyW) / 2);
+  const y = Math.round((H - PHONE_H) / 2) + 10;
+  const sr = PHONE_R - BEZEL;
+
+  const screen = await sharp(file)
+    .resize({ width: screenW, height: screenH, fit: "cover", position: "top" })
+    .sharpen({ sigma: 0.5 })
+    .composite([
+      { input: await sharp(screenOverlay(screenW, screenH, sr)).png().toBuffer(), left: 0, top: 0 },
+      { input: roundedMask(screenW, screenH, sr), blend: "dest-in" },
+    ])
+    .png()
+    .toBuffer();
+
+  const phone = await sharp(phoneBody(bodyW, PHONE_H))
+    .composite([{ input: screen, left: BEZEL, top: BEZEL }])
+    .png()
+    .toBuffer();
+
+  const glowColor = toHex(shiftHue(hex(accent), 0, 1.1, 1));
+  const plate = await sharp(glassPlate(bodyW, PHONE_H, PLATE, PHONE_R)).png().toBuffer();
+  const o = { radius: PHONE_R };
+  const layers = [
+    await shadow(bodyW, PHONE_H, x, y, { ...o, blur: 120, dy: 30, opacity: 0.7, color: glowColor, spread: 10 }),
+    await shadow(bodyW, PHONE_H, x, y, { ...o, blur: 80, dy: 90, opacity: 0.65, spread: -20 }),
+    { input: plate, left: x - PLATE, top: y - PLATE },
+    await shadow(bodyW, PHONE_H, x, y, { ...o, blur: 10, dy: 8, opacity: 0.5 }),
+    { input: phone, left: x, top: y },
+    { input: noise, left: 0, top: 0, blend: "overlay" },
+  ];
+
+  return sharp(backdrop(accent)).composite(layers).webp({ quality: 86, effort: 6 });
+}
+
 const noise = await grain();
 for (const [dir, cfg] of Object.entries(PROJECTS)) {
   const folder = path.join(ROOT, dir);
   if (!fs.existsSync(folder)) continue;
-  for (const f of fs.readdirSync(folder).filter((n) => n.endsWith(".png"))) {
-    const out = path.join(folder, f.replace(/\.png$/, ".webp"));
-    await (await build(path.join(folder, f), cfg, noise)).toFile(out);
+  for (const f of fs.readdirSync(folder).filter((n) => /\.(png|jpe?g)$/.test(n))) {
+    const src = path.join(folder, f);
+    const out = path.join(folder, f.replace(/\.(png|jpe?g)$/, ".webp"));
+    const make = /\.jpe?g$/.test(f) ? buildPhone : build;
+    await (await make(src, cfg, noise)).toFile(out);
     console.log("wrote", path.relative(process.cwd(), out), Math.round(fs.statSync(out).size / 1024) + "KB");
   }
 }
