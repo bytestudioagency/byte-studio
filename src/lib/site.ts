@@ -278,7 +278,7 @@ export const projects: Project[] = [
     highlights: ["Text, photo and video posts", "Feeds matched to language and location", "Moderation and ads in one admin"],
     tags: ["React Native", "Node.js", "Prisma", "PostgreSQL"],
     image: "/portfolio/turant/1.webp",
-    gallery: [],
+    gallery: ["/portfolio/turant/2.webp", "/portfolio/turant/3.webp"],
     challenge:
       "A citizen-journalism idea needed a full social platform, not just a place to read news - people had to be able to post, follow, comment, and share; moderators needed a way to catch bad behavior; and the business needed a way to make money from ads, all at once.",
     solution:
