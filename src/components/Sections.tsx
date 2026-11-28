@@ -328,13 +328,14 @@ const socialIcons: Record<string, Icon> = {
 export function Footer() {
   return (
     <Reveal>
-      <footer className={`${container} flex flex-col gap-6 border-t border-white/10 py-10 text-sm text-fog lg:flex-row lg:items-center lg:justify-between`}>
+      <footer className={`${container} grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-5 border-t border-white/10 py-10 text-sm text-fog lg:flex lg:justify-between`}>
+        {/* Below lg the list dissolves into the footer grid: logo | socials, email, legal | copyright. */}
         <p className="flex items-center gap-3 text-white">
           <Image src="/brand/logo.png" alt={site.name} width={1191} height={215} className="h-5 w-auto" />
         </p>
-        <ul className="flex flex-wrap items-center gap-x-6 gap-y-1 [&_a]:inline-block [&_a]:py-2">
+        <ul role="list" className="contents lg:flex lg:flex-wrap lg:items-center lg:gap-x-6 lg:gap-y-1 [&_a]:inline-block [&_a]:py-2">
           {site.socials.length > 0 && (
-            <li className="flex items-center gap-2">
+            <li className="col-start-2 row-start-1 flex items-center gap-2 justify-self-end">
               {site.socials.map((s) => {
                 const SocialIcon = socialIcons[s.label] ?? GlobeIcon;
                 return (
@@ -354,24 +355,24 @@ export function Footer() {
             </li>
           )}
           {site.email && (
-            <li>
+            <li className="col-span-2">
               <a href={`mailto:${site.email}`} className="transition-colors duration-300 ease-spring hover:text-white">
                 {site.email}
               </a>
             </li>
           )}
-          {[
-            { label: "Privacy", href: "/privacy" },
-            { label: "Terms", href: "/terms" },
-          ].map((l) => (
-            <li key={l.href}>
-              <Link href={l.href} className="transition-colors duration-300 ease-spring hover:text-white">
+          <li className="col-start-1 flex items-baseline gap-6 self-baseline lg:self-auto">
+            {[
+              { label: "Privacy", href: "/privacy" },
+              { label: "Terms", href: "/terms" },
+            ].map((l) => (
+              <Link key={l.href} href={l.href} className="transition-colors duration-300 ease-spring hover:text-white">
                 {l.label}
               </Link>
-            </li>
-          ))}
+            ))}
+          </li>
         </ul>
-        <p className="font-mono text-xs">© {site.year} {site.name}</p>
+        <p className="col-start-2 self-baseline justify-self-end font-mono text-xs lg:self-auto">© {site.year} {site.name}</p>
       </footer>
     </Reveal>
   );
