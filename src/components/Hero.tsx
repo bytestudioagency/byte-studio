@@ -2,13 +2,14 @@ import { container, hero, site } from "@/lib/site";
 import { HeroBackdrop } from "./HeroBackdrop";
 import { HeroCursors } from "./HeroCursors";
 import { HeroBadge } from "./HeroBadge";
+import { HeroReel } from "./HeroReel";
 import { HeroTitle } from "./HeroTitle";
 import { Logos } from "./Logos";
 import { Button } from "./ui";
 
 export function Hero() {
   return (
-    <section id="top" className="relative isolate flex min-h-svh flex-col pt-28 sm:pt-32 md:pt-36">
+    <section id="top" className="relative isolate flex min-h-svh flex-col pt-36 sm:pt-40 md:pt-48">
       <HeroBackdrop />
       {/* Ambient glow */}
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[900px] overflow-hidden">
@@ -42,6 +43,8 @@ export function Hero() {
               </Button>
             </div>
           </div>
+
+          <HeroReel />
         </div>
 
         <Logos />
